@@ -1,0 +1,83 @@
+{% extends 'layouts/main.html' %}
+{% block title %}New Venue{% endblock %}
+{% block content %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+      {% for category, messages in messages %}
+        <div class="alert alert-{{ category }}"></div>
+          {{ message }}
+      {% endfor %}
+  {% endif %}
+{% endwith  %}
+
+  <div class="form-wrapper">
+    <form method="post" class="form">
+      <h3 class="form-heading">Edit venue <a href="{{ url_for('index') }}" title="Back to homepage"><i class="fa fa-home pull-right"></i></a></h3>
+      <div class="form-group">
+        <label for="name">Name</label>
+        {{ form.name(class_ = 'form-control', autofocus = true) }}
+      </div>
+      <div class="form-group">
+          <label>City & State</label>
+          <div class="form-inline">
+            <div class="form-group">
+              {{ form.city(class_ = 'form-control', placeholder='City', autofocus = true) }}
+            </div>
+            <div class="form-group">
+              {{ form.state(class_ = 'form-control', placeholder='State', autofocus = true) }}
+            </div>
+          </div>
+      </div>
+      <div class="form-group">
+        <label for="address">Address</label>
+        {{ form.address(class_ = 'form-control', autofocus = true) }}
+      </div>
+      <div class="form-group">
+          <label for="phone">Phone</label>
+          {{ form.phone(class_ = 'form-control', placeholder='xxx-xxx-xxxx', autofocus = true) }}
+        </div>
+      <div class="form-group">
+        <label for="genres">Genres</label>
+        <small>Ctrl+Click to select multiple</small>
+        {{ form.genres(class_ = 'form-control', placeholder='Genres, separated by commas', id=form.genre, autofocus = true) }}
+      </div>
+
+      <div class="form-group">
+        <br>
+          <label for="facebook">Facebook Link</label>
+          {{ form.facebook_link(class_ = 'form-control', placeholder='http://', id=form.facebook, autofocus = true) }}
+      </div>
+
+      <div class="form-group">
+        <br>
+        <label for="image">Image Link</label>
+        {{ form.image_link(class_ = 'form-control', placeholder='http://', id=form.image, autofocus = true) }}
+      </div>
+
+      <div class="form-group">
+        <label for="web">Website</label>
+        {{ form.website(class_ = 'form-control', placeholder='http://', id=form.web, autofocus = true) }}
+    </div>
+
+      <div class="form-group">
+        <br>
+        <label for="talent">Seeking Talent?</label>
+        {{ form.seeking_talent(class_ = 'form-control',  id=form.talent, autofocus = true) }}
+      </div>
+
+      <div class="form-group">
+        <label for="message">Seeking Description</label>
+        {{ form.seeking_description(class_ = 'form-control', id=form.message,  autofocus = true) }}
+        <br>
+      </div>
+
+      <input type="submit" value="Submit" class="btn btn-primary btn-lg btn-block">
+      {{ form.csrf_token }}
+    </form>
+
+    
+
+
+  </div>
+{% endblock %}
