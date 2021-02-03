@@ -65,45 +65,46 @@ def create_app(test_config=None):
                     })
      
     
-    # # endpoint to DELETE question using a question ID.                
-    # @app.route('/delete/<int:question_id>', methods=["DELETE"])
-    # def delete_question(question_id):
-    #     try:
-    #         question = Question.query.filter(Question.id == question_id).first_or_404()
-    #         question.delete()
-    #         selection = Question.query.order_by(Question.id).all()
-    #         current_questions = paginate_questions(request, selection)
+    # endpoint to DELETE question using a question ID.                
+    @app.route('/delete/<int:question_id>', methods=["DELETE"])
+    def delete_question(question_id):
+        try:
+            question = Question.query.filter(Question.id == question_id).first_or_404()
+            question.delete()
+            selection = Question.query.order_by(Question.id).all()
+            current_questions = paginate_questions(request, selection)
             
-    #         return jsonify({
-    #             'success':True,
-    #             'deleted': question_id,
-    #             'questions': current_questions,
-    #             "total_questions": len(selection)
-    #             })
-    #     except:
-    #         abort(422)
+            return jsonify({
+                'success':True,
+                'deleted': question_id,
+                'questions': current_questions,
+                "total_questions": len(selection)
+                })
+        except:
+            abort(422)
      
     
     @app.route('/questions/create', methods=["POST"])
     def create_question():
         body = request.get_json()
-        new_question = body.get('question', None)
-        ans_text = body.get('answer', None)
-        new_category = body.get('category', None)
-        difficulty_score = body.get('difficulty', None)
+        new_question = body.get('question')
+        ans_text = body.get('answer')
+        new_category = body.get('category')
+        difficulty_score = body.get('difficulty')
 
         try:
-            question = Question(question = new_question, 
-                                category = new_category,
-                                difficulty = difficulty_score,
-                                answer = ans_text)
+            question = Question( question = new_question, 
+                                    answer = ans_text, 
+                                    category = new_category,
+                                    difficulty = difficulty_score)
             question.insert()
             selection = Question.query.order_by(Question.id).all()
             current_questions = paginate_questions(request, selection)
             
             return jsonify({
                     'success':True,
-                    'created': question_id,
+                    "status_code":200,
+                    'created': question.id,
                     'questions': current_questions,
                     "total_questions": len(selection)
                     })
@@ -119,7 +120,7 @@ def create_app(test_config=None):
             "message": "resource noy found"
         }), 404
 
-    return app
+   
 
     @app.errorhandler(422)
     def not_found(error):
@@ -127,7 +128,7 @@ def create_app(test_config=None):
             "success":False,
             "error": 422,
             "message": "unprocessable"
-        }), 404
+        }), 422
 
     return app
 
