@@ -66,10 +66,10 @@ def create_app(test_config=None):
      
     
     # endpoint to DELETE question using a question ID.                
-    @app.route('/delete/<int:question_id>', methods=["DELETE"])
+    @app.route('/delete/<int:id>', methods=["DELETE"])
     def delete_question(question_id):
         try:
-            question = Question.query.filter(Question.id == question_id).first_or_404()
+            question = Question.query.filter(Question.id == id).first_or_404()
             question.delete()
             selection = Question.query.order_by(Question.id).all()
             current_questions = paginate_questions(request, selection)
@@ -111,13 +111,101 @@ def create_app(test_config=None):
         except:
             abort(422)
 
+    # GET endpoint to get questions based on category
+    # returns all the questions and the total number of questions 
+    # for a specif category
 
+
+    @app.route('/categories/<int:id>/questions')
+
+    def search_question_cat(id):
+
+        selection = Question.query.filter(Question.category == str(id)).all()
+
+
+        if len(selection) == 0:
+            return abort(404)
+
+        try:
+            current_questions = paginate_questions(request, selection)
+            
+            return jsonify({
+                    'success':True,
+                    "status_code":200,
+                    'questions': current_questions,
+                    "total_questions": len(selection)
+                    })
+        except:
+            abort(422)
+
+    # endpoint to get questions based on a search term
+    @app.route('/questions/search', methods=['POST'])
+
+    def search_question():
+
+        body = request.get_json()
+
+        search_term = body.get('searchTerm') 
+        print(search_term)
+
+        if not search_term:
+            abort(422)
+
+        try:
+            selection = Question.query.filter(Question.question.ilike(f'%{search_term}%')).all()
+            if len(selection) == 0:
+                return abort(404)
+            current_questions = paginate_questions(request, selection)
+            
+            return jsonify({
+                    'success':True,
+                    "status_code":200,
+                    'questions': current_questions,
+                    "total_questions": len(selection)
+                    })
+        except:
+            abort(422)
+
+    # endpoint to get questions based on a search term
+    @app.route('/quizzes', methods=['POST'])
+
+    def quiz():
+        selected_questions = []
+        body = request.get_json()
+        prev_questions = body.get('previous_question')
+        quiz_category = body.get('quiz_category')
+        
+        if quiz_category is None or prev_questions is None:
+            abort(404)
+
+        if quiz_category['id'] == 0:
+            questions = Question.query.all()
+        else:
+            questions =  Question.query.filter(Question.category == question_category).all()
+        
+        for question in questions:
+            if question not in prev_questions:
+                selected_questions.append(question)
+
+        current_question = random.choice(selected_questions)
+
+    
+        return jsonify({
+                    'success':True,
+                    "status_code":200,
+                    'question': current_question.format()
+                   
+                    
+                    })
+        
+
+        
     @app.errorhandler(404)
     def not_found(error):
         return jsonify({
             "success":False,
             "error": 404,
-            "message": "resource noy found"
+            "message": "resource not found"
         }), 404
 
    
