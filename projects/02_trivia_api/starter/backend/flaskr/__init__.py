@@ -197,17 +197,19 @@ def create_app(test_config=None):
         prev_questions = body.get('previous_questions', [])
         quiz_category = body.get('quiz_category', None)
 
-        if quiz_category is None:
-            abort(422)
+        
+
+        if body is None or quiz_category is None:
+            abort(400)
 
         # if All categories are selected that get all the questions
         # else, when a specific category is selected, select only the 
         # questions of that category that are not in previous questions
         if quiz_category['id'] == 0:
-            questions = Question.query.all()
+            questions = Question.query.filter(Question.id.notin_(prev_questions)).all()
         else:
-            questions = Question.query.filter(Question.category == quiz_category['id']).\
-                filter(Question.id not in prev_questions).all()
+            questions = Question.query.filter(Question.id.notin_(prev_questions),
+                                            Question.category == quiz_category['id']).all()
 
         if questions is None:
             abort(404)
