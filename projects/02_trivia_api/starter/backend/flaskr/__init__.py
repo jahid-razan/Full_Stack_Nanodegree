@@ -29,29 +29,6 @@ def create_app(test_config=None):
         response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
         response.headers.add('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS')
         return response
-      
-    # GET requests for questions, including pagination (every 10 questions). 
-    # this endpoint returns a list of questions, number of total questions, 
-    # current category, and all the available categories
-    @app.route('/questions', methods=["GET"])
-    def get_questions():
-        selection = Question.query.order_by(Question.category, Question.id).group_by(Question.category, Question.id).all()
-        total_questions = len(selection)
-        current_questions = paginate_questions(request, selection)
-        all_cat = Category.query.order_by(Category.id).all()
-        formatted_categories = {category.id:category.type for category in all_cat}
-          
-        if len(current_questions) == 0:
-            abort(404)
-          
-        return jsonify({
-                        'success':True,
-                        "status_code":200,
-                        'current_category': None,
-                        'categories': formatted_categories,
-                        'questions': current_questions,
-                        "total_questions": total_questions
-                    })
 
     # endpoint to handle GET requests for all available categories                
     @app.route('/categories', methods=["GET"])
@@ -71,6 +48,31 @@ def create_app(test_config=None):
 
                     })
      
+      
+    # GET requests for questions, including pagination (every 10 questions). 
+    # this endpoint returns a list of questions, number of total questions, 
+    # current category, and all the available categories
+    @app.route('/questions', methods=["GET"])
+    def get_questions():
+        selection = Question.query.order_by(Question.id, Question.category).group_by(Question.category, Question.id).all()
+        total_questions = len(selection)
+        current_questions = paginate_questions(request, selection)
+        all_cat = Category.query.order_by(Category.id).all()
+        formatted_categories = {category.id:category.type for category in all_cat}
+          
+        if len(current_questions) == 0:
+            abort(404)
+          
+        return jsonify({
+                        'success':True,
+                        "status_code":200,
+                        'current_category': None,
+                        'categories': formatted_categories,
+                        'questions': current_questions,
+                        "total_questions": total_questions
+                    })
+
+    
     
     # endpoint to DELETE question using a question ID.                
     @app.route('/questions/<int:id>', methods=["DELETE"])
@@ -80,13 +82,11 @@ def create_app(test_config=None):
             question.delete()
             selection = Question.query.order_by(Question.id).all()
             total_questions = len(selection)
-            current_questions = paginate_questions(request, selection)
             
             return jsonify({
                 'success':True,
                 "status_code":200,
                 'deleted': id,
-                'questions': current_questions,
                 "total_questions": total_questions
                 })
         except:
@@ -119,7 +119,6 @@ def create_app(test_config=None):
                     'success':True,
                     "status_code":200,
                     'created': question.id,
-                    'questions': current_questions,
                     "total_questions": total_questions
                     })
         except:
@@ -197,10 +196,9 @@ def create_app(test_config=None):
         prev_questions = body.get('previous_questions', [])
         quiz_category = body.get('quiz_category', None)
 
-        
 
         if body is None or quiz_category is None:
-            abort(400)
+            abort(404)
 
         # if All categories are selected that get all the questions
         # else, when a specific category is selected, select only the 
@@ -210,6 +208,11 @@ def create_app(test_config=None):
         else:
             questions = Question.query.filter(Question.id.notin_(prev_questions),
                                             Question.category == quiz_category['id']).all()
+
+        if len(questions) == 0:
+            return jsonify({
+                'success': True
+            })                                    
 
         if questions is None:
             abort(404)
