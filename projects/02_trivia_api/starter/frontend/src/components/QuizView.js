@@ -12,12 +12,12 @@ class QuizView extends Component {
         quizCategory: null,
         previousQuestions: [], 
         showAnswer: false,
-        categories: {},
+        categories:{},
         numCorrect: 0,
         currentQuestion: {},
         guess: '',
         forceEnd: false
-    }
+    }  
   }
 
   componentDidMount(){
@@ -132,7 +132,11 @@ class QuizView extends Component {
 
   evaluateAnswer = () => {
     const formatGuess = this.state.guess.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").toLowerCase()
-    const answerArray = this.state.currentQuestion.answer.toLowerCase().split(' ');
+
+    if(formatGuess == ''){
+      return false
+    }
+    const answerArray = this.state.currentQuestion.answer.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").toLowerCase();
     return answerArray.includes(formatGuess)
   }
 
