@@ -403,7 +403,6 @@ def search_artists():
 
   data = []
   # get the search term and make it lower case 
-  # 
   search_term = request.form.get('search_term').lower()
   # searh all the artist to get the artist(s) with the search term
   # using ilike to make it case insensitive and limit the result to 10 
