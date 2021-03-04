@@ -122,92 +122,92 @@ The API will return the following error types when requests fail:
     * Shows the list of questions: paginates 10 quesitons per page
     * Sample: curl http://127.0.0.1:5000/questions
 
-{
-    "categories": {
-        "1": "Science",
-        "2": "Art",
-        "3": "Geography",
-        "4": "History",
-        "5": "Entertainment",
-        "6": "Sports"
-    },
-    "current_category": null,
-    "questions": [
-        {
-            "answer": "The Liver",
-            "category": 1,
-            "difficulty": 4,
-            "id": 20,
-            "question": "What is the heaviest organ in the human body?"
-        },
-        {
-            "answer": "Alexander Fleming",
-            "category": 1,
-            "difficulty": 3,
-            "id": 21,
-            "question": "Who discovered penicillin?"
-        },
-        {
-            "answer": "Blood",
-            "category": 1,
-            "difficulty": 4,
-            "id": 22,
-            "question": "Hematology is a branch of medicine involving the study of what?"
-        },
-        {
-            "answer": "Jupiter",
-            "category": 1,
-            "difficulty": 3,
-            "id": 39,
-            "question": "What is the largest planet in the solar system?"
-        },
-        {
-            "answer": "AB negative",
-            "category": 1,
-            "difficulty": 3,
-            "id": 40,
-            "question": "What is the rarest blood type?"
-        },
-        {
-            "answer": "Tendons",
-            "category": 1,
-            "difficulty": 3,
-            "id": 41,
-            "question": "What tissues connect the muscles to the bones?"
-        },
-        {
-            "answer": "Escher",
-            "category": 2,
-            "difficulty": 1,
-            "id": 16,
-            "question": "Which Dutch graphic artist initials M C was a creator of optical illusions?"
-        },
-        {
-            "answer": "Mona Lisa",
-            "category": 2,
-            "difficulty": 3,
-            "id": 17,
-            "question": "La Giaconda is better known as what?"
-        },
-        {
-            "answer": "One",
-            "category": 2,
-            "difficulty": 4,
-            "id": 18,
-            "question": "How many paintings did Van Gogh sell in his lifetime?"
-        },
-        {
-            "answer": "Jackson Pollock",
-            "category": 2,
-            "difficulty": 2,
-            "id": 19,
-            "question": "Which American artist was a pioneer of Abstract Expressionism, and a leading exponent of action painting?"
-        }
-    ],
-    "status_code": 200,
-    "success": true,
-    "total_questions": 25
-}
+            {
+                "categories": {
+                    "1": "Science",
+                    "2": "Art",
+                    "3": "Geography",
+                    "4": "History",
+                    "5": "Entertainment",
+                    "6": "Sports"
+                },
+                "current_category": null,
+                "questions": [
+                    {
+                        "answer": "The Liver",
+                        "category": 1,
+                        "difficulty": 4,
+                        "id": 20,
+                        "question": "What is the heaviest organ in the human body?"
+                    },
+                    {
+                        "answer": "Alexander Fleming",
+                        "category": 1,
+                        "difficulty": 3,
+                        "id": 21,
+                        "question": "Who discovered penicillin?"
+                    },
+                    {
+                        "answer": "Blood",
+                        "category": 1,
+                        "difficulty": 4,
+                        "id": 22,
+                        "question": "Hematology is a branch of medicine involving the study of what?"
+                    },
+                    {
+                        "answer": "Jupiter",
+                        "category": 1,
+                        "difficulty": 3,
+                        "id": 39,
+                        "question": "What is the largest planet in the solar system?"
+                    },
+                    {
+                        "answer": "AB negative",
+                        "category": 1,
+                        "difficulty": 3,
+                        "id": 40,
+                        "question": "What is the rarest blood type?"
+                    },
+                    {
+                        "answer": "Tendons",
+                        "category": 1,
+                        "difficulty": 3,
+                        "id": 41,
+                        "question": "What tissues connect the muscles to the bones?"
+                    },
+                    {
+                        "answer": "Escher",
+                        "category": 2,
+                        "difficulty": 1,
+                        "id": 16,
+                        "question": "Which Dutch graphic artist initials M C was a creator of optical illusions?"
+                    },
+                    {
+                        "answer": "Mona Lisa",
+                        "category": 2,
+                        "difficulty": 3,
+                        "id": 17,
+                        "question": "La Giaconda is better known as what?"
+                    },
+                    {
+                        "answer": "One",
+                        "category": 2,
+                        "difficulty": 4,
+                        "id": 18,
+                        "question": "How many paintings did Van Gogh sell in his lifetime?"
+                    },
+                    {
+                        "answer": "Jackson Pollock",
+                        "category": 2,
+                        "difficulty": 2,
+                        "id": 19,
+                        "question": "Which American artist was a pioneer of Abstract Expressionism, and a leading exponent of action painting?"
+                    }
+                ],
+                "status_code": 200,
+                "success": true,
+                "total_questions": 25
+            }
 
 
 * DELETE/questions/<int:id>
@@ -217,12 +217,12 @@ The API will return the following error types when requests fail:
     * Shows the number of remaining questions
     * Sample: curl http://127.0.0.1:5000/questions/44 -X DELETE
 
-{
-    "deleted": 44,
-    "status_code": 200,
-    "success": true,
-    "total_questions": 25
-}
+            {
+                "deleted": 44,
+                "status_code": 200,
+                "success": true,
+                "total_questions": 25
+            }
 
 * POST/questions/create
 
@@ -230,12 +230,12 @@ The API will return the following error types when requests fail:
     * Shows the number of total questions including the new question
     * Sample: curl -X POST "http://127.0.0.1:5000/questions/create" -d "{\"question\":\"test_question\", \"answer\":\"test_answer\", \"category\":\"5\", \"difficulty\":\"2\" }" -H "Content-Type: application/json"
 
-{
-    "created": 58,
-    "status_code": 200,
-    "success": true,
-    "total_questions": 26
-}
+            {
+                "created": 58,
+                "status_code": 200,
+                "success": true,
+                "total_questions": 26
+            }
 
 * GET/categories/<int:id>/questions
 
@@ -243,49 +243,49 @@ The API will return the following error types when requests fail:
     * Shows the number of total questions for that category
     * Sample: curl http://127.0.0.1:5000/categories/4/questions
 
-{
-    "currentCategory": "History",
-    "questions": [
-        {
-            "answer": "Maya Angelou",
-            "category": 4,
-            "difficulty": 2,
-            "id": 5,
-            "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
-        },
-        {
-            "answer": "Muhammad Ali",
-            "category": 4,
-            "difficulty": 1,
-            "id": 9,
-            "question": "What boxer's original name is Cassius Clay?"
-        },
-        {
-            "answer": "George Washington Carver",
-            "category": 4,
-            "difficulty": 2,
-            "id": 12,
-            "question": "Who invented Peanut Butter?"
-        },
-        {
-            "answer": "Scarab",
-            "category": 4,
-            "difficulty": 4,
-            "id": 23,
-            "question": "Which dung beetle was worshipped by the ancient Egyptians?"
-        },
-        {
-            "answer": "Euro",
-            "category": 4,
-            "difficulty": 1,
-            "id": 31,
-            "question": "What is the currency of the Netherlands ?"
-        }
-    ],
-    "status_code": 200,
-    "success": true,
-    "totalQuestions": 5
-}
+            {
+                "currentCategory": "History",
+                "questions": [
+                    {
+                        "answer": "Maya Angelou",
+                        "category": 4,
+                        "difficulty": 2,
+                        "id": 5,
+                        "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+                    },
+                    {
+                        "answer": "Muhammad Ali",
+                        "category": 4,
+                        "difficulty": 1,
+                        "id": 9,
+                        "question": "What boxer's original name is Cassius Clay?"
+                    },
+                    {
+                        "answer": "George Washington Carver",
+                        "category": 4,
+                        "difficulty": 2,
+                        "id": 12,
+                        "question": "Who invented Peanut Butter?"
+                    },
+                    {
+                        "answer": "Scarab",
+                        "category": 4,
+                        "difficulty": 4,
+                        "id": 23,
+                        "question": "Which dung beetle was worshipped by the ancient Egyptians?"
+                    },
+                    {
+                        "answer": "Euro",
+                        "category": 4,
+                        "difficulty": 1,
+                        "id": 31,
+                        "question": "What is the currency of the Netherlands ?"
+                    }
+                ],
+                "status_code": 200,
+                "success": true,
+                "totalQuestions": 5
+            }
 
 * POST/questions/search
 
@@ -293,20 +293,20 @@ The API will return the following error types when requests fail:
     * Shows the number of total questions found that contains the searchterm
     * Sample: curl http://127.0.0.1:5000/questions/search" -d "{\"searchTerm\":\"1930\"}" -H "Content-Type: application/json"
 
-{
-    "questions": [
-        {
-            "answer": "Uruguay",
-            "category": 6,
-            "difficulty": 4,
-            "id": 11,
-            "question": "Which country won the first ever soccer World Cup in 1930?"
-        }
-    ],
-    "status_code": 200,
-    "success": true,
-    "total_questions": 1
-}
+            {
+                "questions": [
+                    {
+                        "answer": "Uruguay",
+                        "category": 6,
+                        "difficulty": 4,
+                        "id": 11,
+                        "question": "Which country won the first ever soccer World Cup in 1930?"
+                    }
+                ],
+                "status_code": 200,
+                "success": true,
+                "total_questions": 1
+            }
 
 * POST/quizzes
 
@@ -314,12 +314,12 @@ The API will return the following error types when requests fail:
     * Sample: curl -X POST "http://127.0.0.1:5000/quizzes" -d "{\"quiz_category\":{\"type\": \"Science\", \"id\": \"1\"},\"previous_questions\":[2]}" -H "Content-Type: application/json"
 
 
-{"question":
-            {"answer":"The Liver",
-             "category":1,
-             "difficulty":4,
-             "id":20,
-             "question":"What is the heaviest organ in the human body?"
-             },
-  "status_code":200,
-  "success":true}
+            {"question":
+                        {"answer":"The Liver",
+                        "category":1,
+                        "difficulty":4,
+                        "id":20,
+                        "question":"What is the heaviest organ in the human body?"
+                        },
+            "status_code":200,
+            "success":true}
