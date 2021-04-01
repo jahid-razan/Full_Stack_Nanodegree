@@ -80,7 +80,7 @@ def drink_details():
         or appropriate status code indicating reason for failure
 '''
 @app.route('/new_drinks', methods=['POST'])
-# @requires_auth('post:drinks')
+@requires_auth('post:drinks')
 def new_drink():
     body = request.get_json()
     title = body.get('title', None)
