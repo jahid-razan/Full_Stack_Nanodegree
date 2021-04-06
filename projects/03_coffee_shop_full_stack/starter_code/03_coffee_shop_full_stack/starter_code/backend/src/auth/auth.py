@@ -43,7 +43,7 @@ def get_token_auth_header():
     elif header_parts[0].lower() != bearer:
         abort(401)
 
-    token = header_parts[1]
+    token = header_parts[2]
     return token
 
 '''
@@ -162,11 +162,8 @@ def requires_auth(permission=''):
         @wraps(f)
         def wrapper(*args, **kwargs):
             token = get_token_auth_header()
-            try:
-                payload = verify_decode_jwt(token)
-                check_permissions(permission, payload)
-            except BaseException:
-                abort(401)
+            payload = verify_decode_jwt(token)
+            check_permissions(permission, payload)
             return f(payload, *args, **kwargs)
 
         return wrapper
