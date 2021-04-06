@@ -5,6 +5,7 @@ import json
 from flask_cors import CORS
 from jose import jwt
 
+
 from .database.models import db_drop_and_create_all, setup_db, Drink
 from auth.auth import AuthError, requires_auth
 
@@ -240,7 +241,8 @@ def internal_server(error):
     return jsonify({
     'success': False,
     'error': 500, 
-    'message': ''' The server ecnountered an internal error or misconfiguration.
+    'message': ''' 
+    The server ecnountered an internal error or misconfiguration.
     Please try again later.'''
         }), 500
 
@@ -251,6 +253,8 @@ def authentification_failed(AuthError):
         "error": AuthError.status_code,
         "message": get_error_message(AuthError.error, "authentification fails")
                     }), AuthError.status_code
+
+
 
 
 
