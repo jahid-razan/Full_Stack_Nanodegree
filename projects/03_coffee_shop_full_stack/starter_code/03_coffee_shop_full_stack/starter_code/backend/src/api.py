@@ -244,6 +244,14 @@ def internal_server(error):
     Please try again later.'''
         }), 500
 
+@app.errorhandler(AuthError)
+def authentification_failed(AuthError):
+    return jsonify({
+        "success": False,
+        "error": AuthError.status_code,
+        "message": get_error_message(AuthError.error, "authentification fails")
+                    }), AuthError.status_code
+
 
 
 
