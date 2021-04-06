@@ -37,13 +37,13 @@ def get_token_auth_header():
 
     auth_header = request.headers['Authorization']
     header_parts = auth_header.split(' ')
-    print(header_parts[1])
+
     if len(header_parts) != 2:
         abort(401)
-    elif header_parts[0].lower() != bearer:
+    elif header_parts[0].lower() != 'bearer':
         abort(401)
+    token = header_parts[1]
 
-    token = header_parts[2]
     return token
 
 '''
@@ -168,3 +168,4 @@ def requires_auth(permission=''):
 
         return wrapper
     return requires_auth_decorator
+
