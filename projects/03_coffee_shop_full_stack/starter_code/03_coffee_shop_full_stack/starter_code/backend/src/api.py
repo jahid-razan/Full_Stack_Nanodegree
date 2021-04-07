@@ -61,7 +61,7 @@ def get_all_drinks():
 '''
 @app.route('/drinks_detail', methods=['GET'])
 @requires_auth('get:drinks-detail')
-def drink_details():
+def drink_details(payload):
     all_drinks = Drink.query.all()
     formatted_details = [drink.long() for drink in all_drinks]
 
@@ -82,10 +82,13 @@ def drink_details():
 '''
 @app.route('/new_drinks', methods=['POST'])
 @requires_auth('post:drinks')
-def new_drink():
+def new_drink(payload):
     body = request.get_json()
     title = body.get('title', None)
     recipe = body.get('recipe', None) 
+    
+    if body is None:
+        anort(404)
 
     if not (title and recipe):
         abort(422)
@@ -122,16 +125,16 @@ def new_drink():
 @app.route('/drinks/<int:id>', methods=['PATCH'])
 @requires_auth('patch:drinks')
 def edit_drink(id):
-
     body = request.get_json()
     title = body.get('title', None)
     recipe = body.get('recipe', None)
+
+    drink = Drink.query.filter(Drink.id == int(id)).one_or_none()
+
+    if drink is None:
+        abort(404)
     
     try: 
-        drink = Drink.query.filter(Drink.id == int(id)).one_or_none()
-        print(drink)
-        if drink is None:
-            abort (404)
         drink.title = title
         drink.recipe = json.dumps(recipe)
         drink.update()
@@ -247,12 +250,12 @@ def internal_server(error):
         }), 500
 
 @app.errorhandler(AuthError)
-def authentification_failed(AuthError):
+def authentification_failed(error):
     return jsonify({
         "success": False,
-        "error": AuthError.status_code,
-        "message": get_error_message(AuthError.error, "authentification fails")
-                    }), AuthError.status_code
+        "error": error.status_code,
+        "message": "authentification fails"
+                    }), error.status_code
 
 
 
