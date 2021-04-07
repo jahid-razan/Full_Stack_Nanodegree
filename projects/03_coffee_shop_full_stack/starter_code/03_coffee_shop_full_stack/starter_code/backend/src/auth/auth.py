@@ -33,15 +33,27 @@ class AuthError(Exception):
 
 def get_token_auth_header():
     if 'Authorization' not in request.headers:
-        abort(401)
+        raise AuthError({
+            'code': 'missning_authorization_header',
+            'description': 'Authorization header is expected .'
+        }, 401)
+
 
     auth_header = request.headers['Authorization']
     header_parts = auth_header.split(' ')
 
+
     if len(header_parts) != 2:
-        abort(401)
+        raise AuthError({
+            'code': 'invalid_header',
+            'description': 'Authorization header must have two parts .'
+        }, 401)
+
     elif header_parts[0].lower() != 'bearer':
-        abort(401)
+        raise AuthError({
+            'code': 'invalid_header',
+            'description': 'Authorization header must start with "Bearer" .'
+        }, 401)
     token = header_parts[1]
 
     return token
@@ -164,7 +176,10 @@ def requires_auth(permission=''):
             token = get_token_auth_header()
             payload = verify_decode_jwt(token)
             check_permissions(permission, payload)
-            return f(payload, *args, **kwargs)
+            if(kwargs.get('id')):
+                return f(kwargs.get('id'))
+            else:
+                return f(payload, *args, **kwargs)
 
         return wrapper
     return requires_auth_decorator
