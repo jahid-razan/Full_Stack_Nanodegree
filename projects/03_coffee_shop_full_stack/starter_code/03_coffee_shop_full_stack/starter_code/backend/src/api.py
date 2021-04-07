@@ -80,15 +80,13 @@ def drink_details(payload):
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the newly created drink
         or appropriate status code indicating reason for failure
 '''
-@app.route('/new_drinks', methods=['POST'])
+@app.route('/drinks', methods=['POST'])
 @requires_auth('post:drinks')
 def new_drink(payload):
     body = request.get_json()
     title = body.get('title', None)
     recipe = body.get('recipe', None) 
     
-    if body is None:
-        anort(404)
 
     if not (title and recipe):
         abort(422)
