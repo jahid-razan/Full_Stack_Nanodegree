@@ -2,7 +2,7 @@ import os
 from flask import Flask, request, jsonify, abort
 from sqlalchemy import exc
 import json
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from jose import jwt
 
 
@@ -12,6 +12,7 @@ from auth.auth import AuthError, requires_auth
 app = Flask(__name__)
 setup_db(app)
 CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 
 
@@ -59,7 +60,7 @@ def get_all_drinks():
     returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
         or appropriate status code indicating reason for failure
 '''
-@app.route('/drinks_detail', methods=['GET'])
+@app.route('/drinks-detail', methods=['GET'])
 @requires_auth('get:drinks-detail')
 def drink_details(payload):
     all_drinks = Drink.query.all()
@@ -81,15 +82,15 @@ def drink_details(payload):
         or appropriate status code indicating reason for failure
 '''
 @app.route('/drinks', methods=['POST'])
+@cross_origin()
 @requires_auth('post:drinks')
 def new_drink(payload):
     body = request.get_json()
     title = body.get('title', None)
     recipe = body.get('recipe', None) 
     
-
-    if not (title and recipe):
-        abort(422)
+    # if not (title or recipe):
+    #     abort(422)
 
     try: 
         new_drink = Drink(title = title,
@@ -122,17 +123,15 @@ def new_drink(payload):
 
 @app.route('/drinks/<int:id>', methods=['PATCH'])
 @requires_auth('patch:drinks')
-def edit_drink(id):
+def edit_drink(payload, id):
     body = request.get_json()
     title = body.get('title', None)
     recipe = body.get('recipe', None)
 
-    drink = Drink.query.filter(Drink.id == int(id)).one_or_none()
-
-    if drink is None:
-        abort(404)
-    
     try: 
+        drink = Drink.query.filter(Drink.id == int(id)).one_or_none()
+        if drink is None:
+            abort(404)
         drink.title = title
         drink.recipe = json.dumps(recipe)
         drink.update()
@@ -159,7 +158,7 @@ def edit_drink(id):
 '''
 @app.route('/drinks/<int:id>', methods=['DELETE'])
 @requires_auth('delete:drinks')
-def delete_drink(id):
+def delete_drink(payload,id):
     drink = Drink.query.filter(Drink.id == int(id)).one_or_none()
 
     if drink is None:
@@ -260,8 +259,10 @@ def authentification_failed(error):
 
 
 
+
 '''
 @TODO implement error handler for AuthError
     error handler should conform to general task above 
 '''
 # ref: https://github.com/jungleBadger/udacity_coffee_shop/blob/master/troubleshooting/generate_token.md#step-13---start-your-frontend
+# https://knowledge.udacity.com/questions/479169
