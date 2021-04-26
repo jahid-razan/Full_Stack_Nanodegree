@@ -30,32 +30,37 @@ class AuthError(Exception):
         it should raise an AuthError if the header is malformed
     return the token part of the header
 '''
-
+# source: https://github.com/udacity/FSND/blob/master/BasicFlaskAuth/app.py
 def get_token_auth_header():
-    if 'Authorization' not in request.headers:
+    """Obtains the Access Token from the Authorization Header
+    """
+    auth = request.headers.get('Authorization', None)
+    if not auth:
         raise AuthError({
-            'code': 'missning_authorization_header',
-            'description': 'Authorization header is expected .'
+            'code': 'authorization_header_missing',
+            'description': 'Authorization header is expected.'
         }, 401)
 
-
-    auth_header = request.headers['Authorization']
-    header_parts = auth_header.split(' ')
-
-
-    if len(header_parts) != 2:
-        raise AuthError({
-            'code': 'invalid_header',
-            'description': 'Authorization header must have two parts .'
-        }, 401)
-
-    elif header_parts[0].lower() != 'bearer':
+    parts = auth.split()
+    if parts[0].lower() != 'bearer':
         raise AuthError({
             'code': 'invalid_header',
-            'description': 'Authorization header must start with "Bearer" .'
+            'description': 'Authorization header must start with "Bearer".'
         }, 401)
-    token = header_parts[1]
 
+    elif len(parts) == 1:
+        raise AuthError({
+            'code': 'invalid_header',
+            'description': 'Token not found.'
+        }, 401)
+
+    elif len(parts) > 2:
+        raise AuthError({
+            'code': 'invalid_header',
+            'description': 'Authorization header must be bearer token.'
+        }, 401)
+
+    token = parts[1]
     return token
 
 '''
@@ -80,7 +85,7 @@ def check_permissions(permission, payload):
         raise AuthError({
             'code': 'unauthorized',
             'description': 'Permission not found.'
-        }, 403)
+        }, 401)
     return True
     
 
@@ -98,14 +103,9 @@ def check_permissions(permission, payload):
     !!NOTE urlopen has a common certificate error described here: https://stackoverflow.com/questions/50236117/scraping-ssl-certificate-verify-failed-error-for-http-en-wikipedia-org
 '''
 def verify_decode_jwt(token):
-     # GET THE PUBLIC KEY FROM AUTH0
     jsonurl = urlopen(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json')
     jwks = json.loads(jsonurl.read())
-    
-    # GET THE DATA IN THE HEADER
     unverified_header = jwt.get_unverified_header(token)
-    
-    # CHOOSE OUR KEY
     rsa_key = {}
     if 'kid' not in unverified_header:
         raise AuthError({
@@ -122,16 +122,14 @@ def verify_decode_jwt(token):
                 'n': key['n'],
                 'e': key['e']
             }
-    
-    # Finally, verify!!!
     if rsa_key:
         try:
-            # USE THE KEY TO VALIDATE THE JWT
+
             payload = jwt.decode(
                 token,
                 rsa_key,
                 algorithms=ALGORITHMS,
-                audience=API_AUDIENCE,
+                audience='coffe',
                 issuer='https://' + AUTH0_DOMAIN + '/'
             )
 
@@ -154,9 +152,10 @@ def verify_decode_jwt(token):
                 'description': 'Unable to parse authentication token.'
             }, 400)
     raise AuthError({
-                'code': 'invalid_header',
+        'code': 'invalid_header',
                 'description': 'Unable to find the appropriate key.'
-            }, 400)
+    }, 400)
+
     
 
 '''
