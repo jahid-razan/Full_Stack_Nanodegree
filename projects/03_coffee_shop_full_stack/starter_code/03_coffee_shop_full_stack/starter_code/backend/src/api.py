@@ -64,12 +64,14 @@ def get_all_drinks():
 @requires_auth('get:drinks-detail')
 def drink_details(payload):
     all_drinks = Drink.query.all()
-    formatted_details = [drink.long() for drink in all_drinks]
+    if all_drinks is None:
+        abort(404)
+    formatted_drinks = [drink.long() for drink in all_drinks]
 
     return jsonify ({
         'success':True,
         'status_code':200,
-        'drinks':formatted_details
+        'drinks':formatted_drinks
     })
 
 '''
@@ -82,15 +84,12 @@ def drink_details(payload):
         or appropriate status code indicating reason for failure
 '''
 @app.route('/drinks', methods=['POST'])
-@cross_origin()
 @requires_auth('post:drinks')
 def new_drink(payload):
     body = request.get_json()
     title = body.get('title', None)
     recipe = body.get('recipe', None) 
     
-    # if not (title or recipe):
-    #     abort(422)
 
     try: 
         new_drink = Drink(title = title,
@@ -103,7 +102,7 @@ def new_drink(payload):
 
     return jsonify({
             'success':True,
-            'drink': drink,
+            'drinks': drink,
             'status_code': 200,
 
         })
@@ -174,7 +173,7 @@ def delete_drink(payload,id):
 
         'success': True,
         'delete': id
-    })
+    }), 200
 
 
 
@@ -190,7 +189,7 @@ def bad_request(error):
     return jsonify({
         "success": False,
         "error": 400,
-        "message": "bad request"
+        "message": "Bad Request"
         }), 400
 
 @app.errorhandler(401)
@@ -198,7 +197,7 @@ def unauthorized(error):
     return jsonify({
         "success":False,
         "error": 401,
-        "message": "unauthorized"
+        "message": "Unauthorized"
     }), 401
 
 @app.errorhandler(403)
@@ -206,7 +205,7 @@ def unauthorized(error):
     return jsonify({
         "success":False,
         "error": 403,
-        "message": "forbidden"
+        "message": "Forbidden"
     }), 403
 
 @app.errorhandler(404)
@@ -222,7 +221,7 @@ def not_allowed(error):
     return jsonify({
         "success": False,
         "error": 405,
-        "message": "method not allowed"
+        "message": "Method not Allowed"
         }), 405
 
 
@@ -232,7 +231,7 @@ def not_found(error):
     return jsonify({
         "success":False,
         "error": 422,
-        "message": "unprocessable"
+        "message": "Unprocessable"
     }), 422
 
 
@@ -241,16 +240,15 @@ def internal_server(error):
     return jsonify({
     'success': False,
     'error': 500, 
-    'message': ''' 
-    The server ecnountered an internal error or misconfiguration.
-    Please try again later.'''
+    'message': 'Internal Server Error' 
+    
         }), 500
 
 @app.errorhandler(AuthError)
 def authentification_failed(error):
     return jsonify({
         "success": False,
-        "error": error.status_code,
+        "error": error.error,
         "message": "authentification fails"
                     }), error.status_code
 
